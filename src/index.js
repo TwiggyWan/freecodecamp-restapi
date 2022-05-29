@@ -1,11 +1,12 @@
 const express = require ("express");
 
+const v1Router = require ("./v1/routes");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-    res.send("ça marche");
-})
+app.use ("/api/v1", v1Router);
+
 
 // apparemment ya un format ES6 aussi dans le tuto
 // jsp pourquoi ya besoin d'un million de façons de concaténer des strings dans le log

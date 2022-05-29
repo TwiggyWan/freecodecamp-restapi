@@ -4,9 +4,10 @@
   "description": "https://www.freecodecamp.org/news/rest-api-design-best-practices-build-a-rest-api/",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.js",
-    "lint": "eslint ."
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "dev": "nodemon src/index.js",
+      "lintd": "eslint --debug .",
+      "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
