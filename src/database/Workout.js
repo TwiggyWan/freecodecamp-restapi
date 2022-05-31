@@ -8,7 +8,11 @@ const Utils = require ("./utils.js");
 //genre pourquoi on fait ça au lieu d'une simple fonction?
 //https://www.w3schools.com/js/js_arrow_function.asp
 const getAllWorkouts = () => {
-    return DB.workouts;
+    try {
+        return DB.workouts;
+    } catch (error) {
+        throw { status: 500, message: error };
+    }
 }
 
 const createWorkout = (newWorkout) => {
@@ -26,7 +30,7 @@ const createWorkout = (newWorkout) => {
 
     try {
         DB.workouts.push(newWorkout);
-        saveToDB(DB);
+        Utils.saveToDB(DB);
         return newWorkout;
     } catch (error) {
         throw {
@@ -42,11 +46,16 @@ const createWorkout = (newWorkout) => {
 }
 
 const updateWorkout = (workoutId, changes) => {
+
     const indexToUpdate = DB.workouts.findIndex(
         (workout) => workout.id === workoutId
     );
+
     if (indexToUpdate === -1 ) {
-        return;
+        throw {
+            status: 400,
+            message: "Workout " + changes.name + " does not exist!",
+        };
     }
 
     const updatedWorkout = {
@@ -57,21 +66,36 @@ const updateWorkout = (workoutId, changes) => {
     };
 
     DB.workouts[indexToUpdate] = updatedWorkout;
-    saveToDB(DB);
-    return updatedWorkout;
-}; //faut faire tourner le linter on dirait que les ; sont "optionnels" -> c'est nul
+    try {
+        Utils.saveToDB(DB);
+        return updatedWorkout;
+
+    } catch (error) {
+        throw { status: error?.status || 500, message: error?.message || error };
+    }
+
+}; //faut faire tourner le linter : on dirait que les ; sont "optionnels" -> c'est nul
 
 const deleteWorkout = (workoutId) => {
     const index = DB.workouts.findIndex(
         (workout) => workout.id === workoutId
     );
     if (index === -1 ) {
-        return;
+        throw {
+            status: 400,
+            message: "Workout with id " + workoutId + " does not exist"
+        }
     }
 
     //https://www.w3schools.com/jsref/jsref_splice.asp
-    DB.workouts.splice(index, 1);
-    saveToDB(DB);
+    try {
+        DB.workouts.splice(index, 1);
+        Utils.saveToDB(DB);
+
+    } catch (error) {
+        throw { status: error?.status || 500, message: error?.message || error };
+    }
+
 }
 
 const getWorkout = (id) => {
@@ -79,7 +103,10 @@ const getWorkout = (id) => {
         (workout) => workout.id === id
     );
     if (!workout) {
-        return;
+        throw {
+            status: 400,
+            message: "Workout with id " + id + " does not exist!",
+        };
     }
     return workout;
 }

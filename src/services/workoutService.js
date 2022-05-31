@@ -7,11 +7,20 @@ const { v4: uuidv4 } = require('uuid');
 // It's also a good practice to name the service methods the same as the controller methods
 // so that you have a connection between those. Let's start off with just returning nothing.
 const getAllWorkouts = () => {
-    return Workout.getAllWorkouts();
+    try {
+        return Workout.getAllWorkouts();
+    } catch (error) {
+        throw error;
+    }
+
 };
 
 const getWorkout = (workoutId) => {
-    return Workout.getWorkout(workoutId);
+    try {
+        return Workout.getWorkout(workoutId);
+    } catch (error) {
+        throw error;
+    }
 };
 
 const createWorkout = (newWorkout) => {
@@ -38,11 +47,21 @@ const createWorkout = (newWorkout) => {
 };
 
 const updateWorkout = (workoutId, body) => {
-    return Workout.updateWorkout(workoutId, body);
+    try {
+        return Workout.updateWorkout(workoutId, body);
+    } catch (error) {
+        throw error;
+    }
+
 };
 
 const deleteWorkout = (workoutId) => {
-    Workout.deleteWorkout(workoutId)
+    try {
+        Workout.deleteWorkout(workoutId)
+    } catch (error) {
+        throw error;
+    }
+
 };
 
 module.exports = {

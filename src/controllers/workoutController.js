@@ -4,8 +4,14 @@
 const workoutService = require ("../services/workoutService");
 
 const getAllWorkouts = (req, res) => {
-    const allWorkouts = workoutService.getAllWorkouts();
-    res.send({status: "OK", data: allWorkouts });
+    try {
+        const allWorkouts = workoutService.getAllWorkouts();
+        res.send({status: "OK", data: allWorkouts });
+    } catch (error) {
+        //todo https://stackoverflow.com/questions/18311924/express-js-how-can-i-set-response-status-by-name-rather-than-number
+        res.status(error?.status || 500)
+            .send({ status: "FAILED", data: { error: error?.message || error } });
+    }
 };
 
 const getWorkout = (req, res) => {
@@ -15,8 +21,14 @@ const getWorkout = (req, res) => {
     if ( !workoutId ) {
         return;
     }
-    const workout = workoutService.getWorkout(workoutId);
-    res.send({status: "OK", data: workout });
+    try {
+        const workout = workoutService.getWorkout(workoutId);
+        res.send({status: "OK", data: workout });
+    } catch (error) {
+        res.status(error?.status || 500)
+            .send({ status: "FAILED", data: {error: error?.message || error }});
+    }
+
 };
 
 const createWorkout = (req, res) => {
@@ -41,7 +53,6 @@ const createWorkout = (req, res) => {
                     error: "One of the following keys is missing or is empty in request body: 'name', 'mode', 'equipment', 'exercises', 'trainerTips'",
                 }
             })
-        return;
     }
 //https://livecodestream.dev/post/everything-you-should-know-about-javascript-dictionaries/
     const newWorkout = {
@@ -69,11 +80,21 @@ const updateWorkout = (req, res) => {
     } = req;
 
     if (!workoutId) {
-        return;
+        res.status(400)
+            .send({
+                status: "FAILED",
+                data: { error: "Parameter ':workoutId' can not be empty" },
+            })
     }
-    const updatedWorkout = workoutService.updateWorkout(workoutId, body);
 
-    res.send({ status: "OK", data: updatedWorkout });
+    try {
+        const updatedWorkout = workoutService.updateWorkout(workoutId, body);
+        res.send({ status: "OK", data: updatedWorkout });
+
+    } catch (error) {
+        res.status(error?.status || 500)
+            .send({ status: "FAILED", data: { error: error?.message || error } });
+    }
 };
 
 const deleteWorkout = (req, res) => {
@@ -82,11 +103,22 @@ const deleteWorkout = (req, res) => {
     } = req;
 
     if (!workoutId) {
-        return;
+        res.status(400)
+            .send({
+                status: "FAILED",
+                data: { error: "Parameter ':workoutId' can not be empty"},
+            })
     }
 
-    workoutService.deleteWorkout(workoutId);
-    res.status(204).send({ status: "OK" });
+    try {
+        workoutService.deleteWorkout(workoutId);
+        res.status(204).send({ status: "OK" });
+
+    } catch (error) {
+        res.status(error?.status || 500)
+        //todo remplacer l'objet copié collé par un truc global au fichier
+            .send({status: "FAILED", data: { error: error?.message || error } });
+    }
 };
 
 module.exports = {
