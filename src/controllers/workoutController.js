@@ -9,8 +9,14 @@ const getAllWorkouts = (req, res) => {
 };
 
 const getWorkout = (req, res) => {
-    const workout = workoutService.getWorkout();
-    res.send("get an existing workout");
+    const {
+        params: { workoutId },
+    } = req;
+    if ( !workoutId ) {
+        return;
+    }
+    const workout = workoutService.getWorkout(workoutId);
+    res.send({status: "OK", data: workout });
 };
 
 const createWorkout = (req, res) => {
@@ -41,13 +47,30 @@ const createWorkout = (req, res) => {
 
 // un paramètre (workoutid) est passé mais ça n'apparait pas dans le prototype des fonctions du service
 const updateWorkout = (req, res) => {
-    const updatedWorkout = workoutService.updateWorkout();
-    res.send("Update an existing workout");
+    const {
+        body,
+        params: { workoutId },
+    } = req;
+
+    if (!workoutId) {
+        return;
+    }
+    const updatedWorkout = workoutService.updateWorkout(workoutId, body);
+
+    res.send({ status: "OK", data: updatedWorkout });
 };
 
 const deleteWorkout = (req, res) => {
-    workoutService.deleteWorkout();
-    res.send("Delete an existing workout");
+    const {
+        params: { workoutId },
+    } = req;
+
+    if (!workoutId) {
+        return;
+    }
+
+    workoutService.deleteWorkout(workoutId);
+    res.status(204).send({ status: "OK" });
 };
 
 module.exports = {

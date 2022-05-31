@@ -10,8 +10,8 @@ const getAllWorkouts = () => {
     return Workout.getAllWorkouts();
 };
 
-const getWorkout = () => {
-  return;
+const getWorkout = (workoutId) => {
+    return Workout.getWorkout(workoutId);
 };
 
 const createWorkout = (newWorkout) => {
@@ -25,18 +25,20 @@ const createWorkout = (newWorkout) => {
         //je copiecolle la syntaxe depuis https://www.npmjs.com/package/uuid, pas celle du tuto
         id: uuidv4(),
         createdAt: new Date().toLocaleString("en-US", { timeZone: "UTC" }),
+        //on met ces propriétés dans le service, mais quand on update on le fait dans le layer database
+        //wazefuck
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "UTC" }),
     };
     const createdWorkout = Workout.createWorkout(workoutToInsert);
     return createdWorkout;
 };
 
-const updateWorkout = () => {
-  return;
+const updateWorkout = (workoutId, body) => {
+    return Workout.updateWorkout(workoutId, body);
 };
 
-const deleteWorkout = () => {
-  return;
+const deleteWorkout = (workoutId) => {
+    Workout.deleteWorkout(workoutId)
 };
 
 module.exports = {
