@@ -29,6 +29,17 @@ const createWorkout = (req, res) => {
         !body.exercises ||
         !body.trainerTips)
     {
+        //c'est illisible
+        //on peut modifier un des paramètres donnés
+        // mais 'req' qui n'est pas modifié n'est pas flag const
+        //todo voir si on peut faire ça en js (probablement que oui)
+        res.status(400)
+            .send({
+                status: "FAILED",
+                data: {
+                    error: "One of the following keys is missing or is empty in request body: 'name', 'mode', 'equipment', 'exercises', 'trainerTips'",
+                }
+            })
         return;
     }
 //https://livecodestream.dev/post/everything-you-should-know-about-javascript-dictionaries/
