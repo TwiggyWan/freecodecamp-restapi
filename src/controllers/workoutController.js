@@ -37,6 +37,7 @@ const createWorkout = (req, res) => {
             .send({
                 status: "FAILED",
                 data: {
+                    //Leaving this error message more generic for all properties will be okay for now. Typically you'd use a schema validator for handling that.
                     error: "One of the following keys is missing or is empty in request body: 'name', 'mode', 'equipment', 'exercises', 'trainerTips'",
                 }
             })
@@ -51,9 +52,13 @@ const createWorkout = (req, res) => {
         trainerTips: body.trainerTips,
     };
 
-    const createdWorkout = workoutService.createWorkout(newWorkout);
-
-    res.status(201).send({ status: "OK", data: createdWorkout });
+    try {
+        const createdWorkout = workoutService.createWorkout(newWorkout);
+        res.status(201).send({ status: "OK", data: createdWorkout });
+    } catch (error) {
+        res.status(error?.status || 500)
+            .send({status: "FAILED", data: {error: error?.message || error}});
+    }
 };
 
 // un paramètre (workoutid) est passé mais ça n'apparait pas dans le prototype des fonctions du service

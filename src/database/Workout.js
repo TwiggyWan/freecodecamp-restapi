@@ -16,9 +16,25 @@ const createWorkout = (newWorkout) => {
           DB.workouts.findIndex((workout) => workout.name === newWorkout.name) > -1;
 
     if (isAlreadyAdded) {
-        return;
+        throw {
+            //donc dans le layer database qui se contrefout qu'on ait une api http branchée,
+            //on ajoute un code d'erreur http....
+            status: 400,
+            message: "Workout " + newWorkout.name + " already exists!",
+        };
     }
 
+    try {
+        DB.workouts.push(newWorkout);
+        saveToDB(DB);
+        return newWorkout;
+    } catch (error) {
+        throw {
+            status: 500,
+            //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
+            message: error?.message || error
+        };
+    }
     DB.workouts.push(newWorkout);
     Utils.saveToDB(DB);
 

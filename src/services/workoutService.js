@@ -29,8 +29,12 @@ const createWorkout = (newWorkout) => {
         //wazefuck
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "UTC" }),
     };
-    const createdWorkout = Workout.createWorkout(workoutToInsert);
-    return createdWorkout;
+
+    try {
+        return Workout.createWorkout(workoutToInsert);
+    } catch (error) {
+        throw error;
+    }
 };
 
 const updateWorkout = (workoutId, body) => {
